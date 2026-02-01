@@ -107,7 +107,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = await _getUserProfile(response.user!.id);
         emit(AuthAuthenticated(user: user));
       }
-     } on AuthException catch (e) {
+    } on AuthException catch (e) {
       String errorMessage = e.message;
       if (e.message.toLowerCase().contains('email rate limit')) {
         errorMessage = 'Too many registration attempts. Please wait a few minutes before trying again.';
@@ -165,5 +165,4 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _authStateSubscription.cancel();
     return super.close();
   }
-
 }
