@@ -14,5 +14,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  
+  final List<String> categories = [
+    'All',
+    'Action',
+    'Adventure',
+    'RPG',
+    'Strategy',
+    'Sports',
+    'Racing',
+  ];
+
+  String selectedCategory = 'All';
+  final List<Product> _products = [];
+
+
 }
