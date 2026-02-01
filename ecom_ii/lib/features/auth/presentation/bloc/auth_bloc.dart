@@ -29,4 +29,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  Future<void> _onAppStarted(
+    AppStarted event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    try {
+      final session = supabaseClient.auth.currentSession;
+      if (session != null) {
+        final user = await _getUserProfile(session.user.id);
+        emit(AuthAuthenticated(user: user));
+      } else {
+        emit(const AuthUnauthenticated());
+      }
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
+    }
+  }
+
 }
