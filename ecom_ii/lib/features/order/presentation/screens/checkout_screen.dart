@@ -23,6 +23,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _cvvController = TextEditingController();
 
   String _selectedPaymentMethod = 'credit_card';
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    _cityController.dispose();
+    _zipController.dispose();
+    _cardNumberController.dispose();
+    _expiryController.dispose();
+    _cvvController.dispose();
+    super.dispose();
+  }
 
   void _placeOrder() {
     if (_formKey.currentState!.validate()) {
