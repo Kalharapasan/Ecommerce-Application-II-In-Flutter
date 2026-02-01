@@ -47,4 +47,39 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _onLoginRequested(
+    LoginRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    try {
+      final response = await supabaseClient.auth.signInWithPassword(
+        email: event.email,
+        password: event.password,
+      );
+      
+      if (response.user != null) {
+        final user = await _getUserProfile(response.user!.id);
+        emit(AuthAuthenticated(user: user));
+      } else {
+        emit(const AuthUnauthenticated());
+      }
+    } on AuthException catch (e) {
+      String errorMessage = e.message;
+      if (e.message.toLowerCase().contains('email rate limit')) {
+        errorMessage = 'Too many login attempts. Please wait a few minutes before trying again.';
+      } else if (e.message.toLowerCase().contains('rate limit')) {
+        errorMessage = 'Too many attempts. Please wait a few minutes before trying again.';
+      } else if (e.message.toLowerCase().contains('invalid login')) {
+        errorMessage = 'Invalid email or password. Please check your credentials.';
+      } else if (e.message.toLowerCase().contains('email not confirmed')) {
+        errorMessage = 'Please check your email and click the confirmation link.';
+      }
+      
+      emit(AuthError(message: errorMessage));
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
+    }
+  }
+
 }
