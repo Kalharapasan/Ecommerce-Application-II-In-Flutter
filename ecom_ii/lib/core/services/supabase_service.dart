@@ -95,6 +95,15 @@ class SupabaseService {
         .update(updates)
         .eq('id', userId);
   }
+  Future<List<Product>> searchProducts(String query) async {
+    final response = await _supabase
+        .from('products')
+        .select()
+        .ilike('name', '%$query%')
+        .limit(20);
+    
+    return (response as List).map((json) => Product.fromJson(json)).toList();
+  }
 
 
 }
