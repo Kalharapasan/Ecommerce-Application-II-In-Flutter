@@ -76,6 +76,25 @@ class SupabaseService {
     
     return List<Map<String, dynamic>>.from(response);
   }
+  Future<void> updateProfile({
+    required String userId,
+    String? name,
+    String? phone,
+    String? address,
+    String? avatarUrl,
+  }) async {
+    final updates = <String, dynamic>{};
+    
+    if (name != null) updates['name'] = name;
+    if (phone != null) updates['phone'] = phone;
+    if (address != null) updates['address'] = address;
+    if (avatarUrl != null) updates['avatar_url'] = avatarUrl;
+    
+    await _supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', userId);
+  }
 
 
 }
