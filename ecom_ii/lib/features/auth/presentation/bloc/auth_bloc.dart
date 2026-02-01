@@ -140,4 +140,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  void _onAuthStateChanged(
+    AuthStateChanged event,
+    Emitter<AuthState> emit,
+  ) {
+    if (event.session == null) {
+      emit(const AuthUnauthenticated());
+    } else {
+    }
+  }
+
 }
