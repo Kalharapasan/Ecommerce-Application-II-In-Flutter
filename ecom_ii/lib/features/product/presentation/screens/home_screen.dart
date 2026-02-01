@@ -106,5 +106,96 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  List<Product> get filteredProducts {
+    if (selectedCategory == 'All') {
+      return _products;
+    }
+    return _products.where((p) => p.category == selectedCategory).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Game Shop'),
+        actions: [
+          IconButton(
+            icon: Badge(
+              label: Text(cartProvider.itemCount.toString()),
+              child: const Icon(Icons.shopping_cart),
+            ),
+            onPressed: () => context.go('/cart'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () => context.go('/profile'),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search games...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                filled: true,
+                fillColor: Colors.grey[100],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 50,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: FilterChip(
+                    label: Text(category),
+                    selected: selectedCategory == category,
+                    onSelected: (selected) {
+                      setState(() {
+                        selectedCategory = category;
+                      });
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: filteredProducts.length,
+              itemBuilder: (context, index) {
+                final product = filteredProducts[index];
+                return ProductCard(
+                  product: product,
+                  onTap: () => context.go('/products/${product.id}'),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
 }
