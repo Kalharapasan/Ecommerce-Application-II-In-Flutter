@@ -6,6 +6,16 @@ import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final SupabaseClient supabaseClient;
+  late final StreamSubscription _authStateSubscription;
 
-  
+  AuthBloc({SupabaseClient? supabaseClient})
+      : supabaseClient = supabaseClient ?? Supabase.instance.client,
+        super(const AuthInitial()) {
+    on<AppStarted>(_onAppStarted);
+    on<LoginRequested>(_onLoginRequested);
+    on<RegisterRequested>(_onRegisterRequested);
+    on<LogoutRequested>(_onLogoutRequested);
+    on<AuthStateChanged>(_onAuthStateChanged);
+
 }
