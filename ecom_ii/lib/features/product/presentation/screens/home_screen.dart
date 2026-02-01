@@ -24,6 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
     'Racing',
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+  }
+
   String selectedCategory = 'All';
   final List<Product> _products = [];
 
