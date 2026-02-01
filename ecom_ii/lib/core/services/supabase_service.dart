@@ -49,5 +49,23 @@ class SupabaseService {
     return Product.fromJson(response);
   }
 
+  Future<void> createOrder({
+    required String userId,
+    required List<Map<String, dynamic>> items,
+    required double totalAmount,
+    required String shippingAddress,
+    required String paymentMethod,
+  }) async {
+    await _supabase.from('orders').insert({
+      'user_id': userId,
+      'items': items,
+      'total_amount': totalAmount,
+      'shipping_address': shippingAddress,
+      'payment_method': paymentMethod,
+      'status': 'pending',
+      'created_at': DateTime.now().toIso8601String(),
+    });
+  }
+
 
 }
