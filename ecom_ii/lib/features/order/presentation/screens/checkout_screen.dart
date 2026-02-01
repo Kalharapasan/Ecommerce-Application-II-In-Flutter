@@ -10,3 +10,8 @@ class CheckoutScreen extends StatefulWidget {
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+
+  
+}
