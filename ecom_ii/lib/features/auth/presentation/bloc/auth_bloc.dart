@@ -82,4 +82,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _onRegisterRequested(
+    RegisterRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+    try {
+      final response = await supabaseClient.auth.signUp(
+        email: event.email,
+        password: event.password,
+        data: {
+          'name': event.name,
+        },
+      );
+      
+      if (response.user != null) {
+        await supabaseClient.from('profiles').insert({
+          'id': response.user!.id,
+          'email': event.email,
+          'name': event.name,
+          'created_at': DateTime.now().toIso8601String(),
+        });
+        
+        final user = await _getUserProfile(response.user!.id);
+        emit(AuthAuthenticated(user: user));
+      }
+
 }
