@@ -17,5 +17,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterRequested>(_onRegisterRequested);
     on<LogoutRequested>(_onLogoutRequested);
     on<AuthStateChanged>(_onAuthStateChanged);
+    _authStateSubscription = this.supabaseClient.auth.onAuthStateChange.listen(
+          (data) {
+        final session = data.session;
+        if (session != null) {
+          add(AuthStateChanged(session: session));
+        } else {
+          add(AuthStateChanged(session: null));
+        }
+      },
+    );
+  }
 
 }
