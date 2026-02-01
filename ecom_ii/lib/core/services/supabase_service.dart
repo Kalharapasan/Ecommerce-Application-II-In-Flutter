@@ -67,5 +67,15 @@ class SupabaseService {
     });
   }
 
+  Future<List<Map<String, dynamic>>> getOrders(String userId) async {
+    final response = await _supabase
+        .from('orders')
+        .select()
+        .eq('user_id', userId)
+        .order('created_at', ascending: false);
+    
+    return List<Map<String, dynamic>>.from(response);
+  }
+
 
 }
