@@ -150,4 +150,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<app_user.User> _getUserProfile(String userId) async {
+    final response = await supabaseClient
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .single();
+    
+    return app_user.User.fromJson(response);
+  }
+
+  @override
+  Future<void> close() {
+    _authStateSubscription.cancel();
+    return super.close();
+  }
+
 }
