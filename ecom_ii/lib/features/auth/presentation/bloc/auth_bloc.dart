@@ -107,5 +107,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = await _getUserProfile(response.user!.id);
         emit(AuthAuthenticated(user: user));
       }
+     } on AuthException catch (e) {
+      String errorMessage = e.message;
+      if (e.message.toLowerCase().contains('email rate limit')) {
+        errorMessage = 'Too many registration attempts. Please wait a few minutes before trying again.';
+      } else if (e.message.toLowerCase().contains('rate limit')) {
+        errorMessage = 'Too many attempts. Please wait a few minutes before trying again.';
+      } else if (e.message.toLowerCase().contains('already registered')) {
+        errorMessage = 'This email is already registered. Please try logging in instead.';
+      } else if (e.message.toLowerCase().contains('invalid email')) {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (e.message.toLowerCase().contains('password')) {
+        errorMessage = 'Password must be at least 6 characters long.';
+      }
+      
+      emit(AuthError(message: errorMessage));
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
+    }
+  }
 
 }
